@@ -82,6 +82,15 @@ public class BookService {
         bookRep.save(book);
     }
 
+
+    @Transactional
+    public void CreateBook(Book book){
+        bookRep.save(book);
+    }
+
+
+
+
     @Transactional(readOnly = true)
     public Book lookForId(String id) {
         Optional<Book> bookOptional = bookRep.findById(id);

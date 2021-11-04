@@ -29,8 +29,6 @@ import org.springframework.web.servlet.view.RedirectView;
 public class AuthorController {
     @Autowired
     AuthorService aservice;
-     @Autowired
-    AuthorRepository arep;
 
     @GetMapping("/listarAutores")
     private List<Author> listaAuthor() {

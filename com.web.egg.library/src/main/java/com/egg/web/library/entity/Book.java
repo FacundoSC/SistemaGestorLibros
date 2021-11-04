@@ -1,16 +1,16 @@
 package com.egg.web.library.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 
 @Entity
 public class Book {
 
     @Id
-    @GeneratedValue()
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
     private Long isbn;
     private String title;
@@ -19,16 +19,15 @@ public class Book {
     private Integer borrowedCopies;
     private Integer remainingCopies;
     private boolean status;
-    @ManyToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     private Author author;
-    @ManyToOne
+    @OneToOne()
     private Editorial editorial;
 
     public Book() {
     }
 
-    public Book(String id, Long isbn, String title, Integer year, Integer copies, Integer borrowedCopies, Integer remainingCopies, boolean status, Author author, Editorial editorial) {
-        this.id = id;
+    public Book(Long isbn, String title, Integer year, Integer copies, Integer borrowedCopies, Integer remainingCopies, boolean status, Author author, Editorial editorial) {
         this.isbn = isbn;
         this.title = title;
         this.year = year;

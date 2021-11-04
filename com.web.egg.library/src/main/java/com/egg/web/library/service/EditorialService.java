@@ -1,11 +1,14 @@
 package com.egg.web.library.service;
 
+import com.egg.web.library.entity.Author;
 import com.egg.web.library.entity.Editorial;
 import com.egg.web.library.exception.MyExceptionService;
 import com.egg.web.library.repository.EditorialRepository;
 import com.egg.web.library.validation.Validation;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -101,6 +104,13 @@ public class EditorialService {
     public String activarEditorial(String id) {
        return editorialRep.activarEditorial(id);
     }
+
+    @Transactional(readOnly = true)
+    public List<Editorial> findAllActive() {
+        return editorialRep.findAll().stream().filter(editorial -> (editorial.isStatus() == Boolean.TRUE)).collect(Collectors.toList());
+    }
+
+
 
     @Transactional(readOnly = false)
     public String desactivarEditorial(String id) {

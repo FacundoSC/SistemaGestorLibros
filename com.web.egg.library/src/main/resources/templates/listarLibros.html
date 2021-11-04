@@ -373,8 +373,8 @@
                
 
 
-                <a class="btn btn-info btn-icon-split" th:href="@{'/crearAutor'}">
-                    <span class="text"> Crear Autor</span>
+                <a class="btn btn-info btn-icon-split" th:href="@{'/crearLibro'}">
+                    <span class="text"> Crear Libro</span>
                   </a>
 
                 <!-- DataTales Example -->
@@ -388,30 +388,46 @@
                                 <thead>
 
                                 <tr>
-                                    <th>Id</th>
-                                    <th>Name</th>
-                                    <th>Status</th>
-                                    <th>Accions</th>
+                                    <th>Titulo</th>
+                                    <th>ISBN</th>
+                                    <th>Año</th>
+                                    <th>copias</th>
+                                    <th>Prestados</th>
+                                    <th>Restantes</th>
+                                    <th>status</th>
+                                    <th>Autor</th>
+                                    <th>Editorial</th>
+                                    <th>Acciones</th>
                                 </tr>
 
                                 </thead>
 
                                 <tbody>
-                                <tr th:each="autor : ${autores}">
-
-                                    <td th:text="${autor.id}"></td>
-                                    <td th:text="${autor.name}"></td>
-                                    <td th:text="${autor.status}" th:id="'status_' + ${autor.id}"></td>
+                                <tr th:each="libro : ${libros}">
+                                    <td th:text="${libro.title}"></td>
+                                    <td th:text="${libro.isbn}"></td>
+                                    <td th:text="${libro.year}"></td>
+                                    <td th:text="${libro.copies}"></td>
+                                    <td th:text="${libro.borrowedCopies}"></td>
+                                    <td th:text="${libro.remainingCopies}"></td>
+                                    <td th:text="${libro.status}" th:id="@{status_+${libro.id}}"></td>
+                                    <td th:text="${libro.author.name}"></td>
+                                    <td th:text="${libro.editorial.name}"></td>
                                     <td>                                 
-                                        <a th:href="@{'/modificarAutor?id='+${autor.id}}" class="btn btn-success btn-icon-split">                                            <span class="text">Modificar</span>
+                                         <a th:href="@{'/modificarLibro?id='+${libro.id}}" class="btn btn-success btn-icon-split">                                            
+                                            <span class="text">Modificar</span>
                                         </a>
-                                      |
-                                       <!--llave para activar y desactivar estado-->
-                                      <a th:class="${autor.status} ? 'estado btn btn-danger btn-icon-split' : 'estado btn btn-success btn-icon-split'">
-                                        <span class="text" th:text="${autor.status} ? 'Desactivar' : 'Activar'" ></span>
-                                      </a>
+
+      
+                                        <!--llave para activar y desactivar estado-->
+                                        <a th:class="${libro.status} ? 'estado btn btn-danger btn-icon-split' : 'estado btn btn-success btn-icon-split'"  th:data-id="${libro.id}"  th:id="@{a_+${libro.id}}">
+                                            <span class="text" th:text="${libro.status} ? 'Desactivar' : 'Activar'"></span>
+                                        </a>
+
+
 
                                     </td>
+
                                 </tr>
                                 </tbody>
                             </table>
@@ -482,113 +498,96 @@
 
 <!-- Page level custom scripts -->
 <script th:src="@{js/demo/datatables-demo.js}"></script>
-
-
-
 <script>
 
 let botones = document.querySelectorAll('.estado');
 
 botones.forEach(element=>{
-
     element.addEventListener('click',function(){
-      const author ={
-         id: this.parentElement.parentElement.firstElementChild.textContent,
-         name: this.parentElement.parentElement.children[1].textContent,
-         status: this.parentElement.parentElement.children[2].textContent
-       } ; // author
+       let tdEstado = document.getElementById(`status_${this.dataset.id}`);
+        let url = (tdEstado.textContent ==="true")? `/bajaLibro?id=${this.dataset.id}`:`/altaLibro?id=${this.dataset.id}`;
+          fetch(url).then(
+                          response => response.text()
+              ).then(
+                      data => {
 
-        const xhr = new XMLHttpRequest();
-         xhr.addEventListener("readystatechange", e=>{
-             if(xhr.readyState === 4){
-                 if(xhr.status>=200 && xhr.status<300){                
-                 let json =JSON.parse(xhr.responseText); /* convierto la cadena de texto en  un objeto javascript*/
-                 json.id = author.id;
-                  document.getElementById("status_"+json.id).innerText= json.status;
-                  if(json.status==="false"){
-                    this.setAttribute("class","estado btn btn-success btn-icon-split");
-                    this.children[0].textContent="Activar";
-                    
-                  }
-                  else{
-                    this.setAttribute("class","estado btn btn-danger btn-icon-split");
-                    this.children[0].textContent="Desactivar";
-                  }
-                  this.parentElement.parentElement.children[2].textContent=json.status;
-                  /*
-                  console.log(json.id);
-                  console.log(json.mensaje);
-                  console.log(json.status);
-                  */
-             }
-             else{              
-                let message = (xhr.statusText==="")?'a ocurrido un error' : xhr.statusText;
-
-                $xhr.innerHTML =`Error: ${xhr.status} ${message} por favor contactese con cgcet `;
-
-             }
-        } //endIf
-
-     }); // cuando exista algun cambio de estado  llamar a la callback
-
-     console.log('esto se ejecuta siempre');
-
-    if(author.status === "true"){
-        xhr.open("GET","/bajaAutor?id="+author.id);
-    }
-    else{
-        xhr.open("GET","/altaAutor?id="+author.id);
-    }
-    
-    xhr.send();
-    });
-    
-  
-
-  });
+                              let message = JSON.parse(data);
+                              let element = document.getElementById(`a_${this.dataset.id}`);
+                              if(message.description === "baja"){
+                               tdEstado.textContent ="false";                          
+                               element.firstElementChild.textContent="Activar";
+                               element.classList.replace("btn-danger","btn-success");
+                              
+                              }
+                              else{
+                                tdEstado.textContent ="true";
+                                element.firstElementChild.textContent="Desactivar";
+                                element.classList.replace("btn-success","btn-danger");
+                              }
+                          
+                      }
+              ).catch(error => console.log(error));
 
 
+            });
 
-  function obtenerJsonResponse(response,author){
-    const json ={
-         id: author.id,
-         name: this.parentElement.parentElement.children[1].textContent,
-         status: this.parentElement.parentElement.children[2].textContent
-       } 
+});
 
-    alert(response);
-
-  }
-
-
-
-
-
-
- /*
-  botones.forEach(element => {
 
 
     /*
-    element.addEventListener('click',function(){
-        const xhr = new XMLHttpRequest();
-        $xhr = document.getElementById('xhr'),
-     
+    let url = (this.dataset.status === "true ")? `/bajaLibro?id=${this.dataset.id}`:`"/altaLibro?id=${this.dataset.id}`;
+ 
+    const options = {
+                      method: "GET",
+                     body: this.dataset.id
+             } ;
+             
+             fetch(url,options).then(
+                             response => response.text()
+                 ).then(
+                         data => {
+                             window.location.assign('/mostrarLibros')
+                         }
+                 );
+  */
 
+      
+
+
+  
+
+/*
+  element.addEventListener('click',function(){
+      const editor ={
+         id: this.parentElement.parentElement.firstElementChild.textContent,
+         name: this.parentElement.parentElement.children[1].textContent,
+         status: this.parentElement.parentElement.children[2].textContent
+       } ; // editor
+
+        const xhr = new XMLHttpRequest();
          xhr.addEventListener("readystatechange", e=>{
              if(xhr.readyState === 4){
                  if(xhr.status>=200 && xhr.status<300){
-                  console.log(xhr.responseText);
-                  let json =JSON.parse(xhr.responseText);
-                  document.getElementById("status_"+json.id).innerText= json.status;
-                  console.log(json.id);
-                  console.log(json.mensaje);
-                  console.log(json.status);
+                 let json =JSON.parse(xhr.responseText);
+                 json.id = editor.id;
+                 if(json.descripcion === "Activar"){
+                    document.getElementById("status_"+json.id).innerText= json.status;
+                    this.setAttribute("class","estado btn btn-success btn-icon-split");
+                    this.children[0].textContent=json.descripcion;
+                 }else if(json.descripcion === "Desactivar"){
+                    document.getElementById("status_"+json.id).innerText= json.status;
+                    this.setAttribute("class","estado btn btn-danger btn-icon-split");
+                    this.children[0].textContent=json.descripcion;
+                 }else{
+
+
+                 }
+                
              }
-             else{              
+             else{
                 let message = (xhr.statusText==="")?'a ocurrido un error' : xhr.statusText;
-                //console.log(`error:`);
-                //console.log(xhr);
+
                 $xhr.innerHTML =`Error: ${xhr.status} ${message} por favor contactese con cgcet `;
 
              }
@@ -598,22 +597,17 @@ botones.forEach(element=>{
 
      console.log('esto se ejecuta siempre');
 
+    if(editor.status === "true"){
+        xhr.open("GET","/desactivarEditorialSp?id="+editor.id);
+    }
+    else{
+        xhr.open("GET","/altaEditorialSp?id="+editor.id);
+    }
 
-    xhr.open("GET","http://localhost:8080/bajaAutor?id=1");
     xhr.send();
     });
-    
-  
 
-  });
-    */
-    
-    
-    
-    
-
-
-
+*/
 </script>
 
 </body>
