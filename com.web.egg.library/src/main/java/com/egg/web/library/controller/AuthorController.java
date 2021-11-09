@@ -2,26 +2,20 @@
 package com.egg.web.library.controller;
 
 import com.egg.web.library.entity.Author;
-import com.egg.web.library.exception.MyExceptionService;
-import com.egg.web.library.repository.AuthorRepository;
+import com.egg.web.library.config.GlobalExceptionHandler;
 import com.egg.web.library.service.AuthorService;
+
 import java .util.regex.*;
-import java.text.MessageFormat;
 import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 
@@ -46,13 +40,13 @@ public class AuthorController {
 
    @Deprecated
    @GetMapping("/activarAutor")
-    public ModelAndView activarAutor(@RequestParam String id) throws MyExceptionService {
+    public ModelAndView activarAutor(@RequestParam String id) throws GlobalExceptionHandler.MyExceptionService {
         String mensaje = altaAutor(id);
         return MostrarAuthor();
    }
 
     @GetMapping("/altaAutor")
-    private String altaAutor(@RequestParam String id) throws MyExceptionService {
+    private String altaAutor(@RequestParam String id) throws GlobalExceptionHandler.MyExceptionService {
      aservice.changeState(id, Boolean.TRUE);
         String mensaje = "El autor " + aservice.lookForId(id).getName() +" ha sido dado de alta";
         final String json = "{\"mensaje\":\" "+mensaje+" \",\"status\":\""+Boolean.TRUE+"\"}";
@@ -61,13 +55,13 @@ public class AuthorController {
 
     @Deprecated
     @GetMapping("/desactivarAutor")
-    public ModelAndView desactivarAutor(@RequestParam String id) throws MyExceptionService {
+    public ModelAndView desactivarAutor(@RequestParam String id) throws GlobalExceptionHandler.MyExceptionService {
         String mensaje = bajaAutor(id);
         return MostrarAuthor();
     }
 
     @GetMapping("/bajaAutor")
-    private String bajaAutor(@RequestParam String id) throws MyExceptionService {
+    private String bajaAutor(@RequestParam String id) throws GlobalExceptionHandler.MyExceptionService {
      aservice.changeState(id, Boolean.FALSE);
         String mensaje = "El autor " + aservice.lookForId(id).getName() +" ha sido dado de baja";
         final String json = "{\"mensaje\":\" "+mensaje+" \",\"status\":\""+Boolean.FALSE+"\"}";

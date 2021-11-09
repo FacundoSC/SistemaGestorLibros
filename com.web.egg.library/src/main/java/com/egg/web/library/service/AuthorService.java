@@ -1,7 +1,7 @@
 package com.egg.web.library.service;
 
 import com.egg.web.library.entity.Author;
-import com.egg.web.library.exception.MyExceptionService;
+import com.egg.web.library.config.GlobalExceptionHandler;
 import com.egg.web.library.repository.AuthorRepository;
 import com.egg.web.library.validation.Validation;
 import java.util.List;
@@ -22,11 +22,11 @@ public class AuthorService {
 
 
     @Transactional
-    public void createAuthor(String name) throws MyExceptionService {
+    public void createAuthor(String name) throws GlobalExceptionHandler.MyExceptionService {
         try {
             Validation.validationService(name);
-        } catch (MyExceptionService e) {
-            throw MyExceptionService.nameAuthor();
+        } catch (GlobalExceptionHandler.MyExceptionService e) {
+            throw GlobalExceptionHandler.MyExceptionService.nameAuthor();
         }
 
         Author author = new Author();
@@ -45,14 +45,14 @@ public class AuthorService {
     }
 
     @Transactional
-    public void modifyName(String id, String name) throws MyExceptionService {
+    public void modifyName(String id, String name) throws GlobalExceptionHandler.MyExceptionService {
         try {
             Validation.validationService(name);
             Optional<Author> reponse = authorRep.findById(id);
             Validation.validationIDfound(id, reponse);
 
-        } catch (MyExceptionService e) {
-            throw new MyExceptionService();
+        } catch (GlobalExceptionHandler.MyExceptionService e) {
+            throw new GlobalExceptionHandler.MyExceptionService();
         }
 
         Author author = authorRep.findById(id).get();
@@ -62,13 +62,13 @@ public class AuthorService {
     }
 
     @Transactional
-    public void changeState(String id, Boolean status) throws MyExceptionService {
+    public void changeState(String id, Boolean status) throws GlobalExceptionHandler.MyExceptionService {
         try {
             Optional<Author> reponse = authorRep.findById(id);
             Validation.validationIDfound(id, reponse);
 
-        } catch (MyExceptionService e) {
-            throw new MyExceptionService();
+        } catch (GlobalExceptionHandler.MyExceptionService e) {
+            throw new GlobalExceptionHandler.MyExceptionService();
         }
      
         Author author = authorRep.findById(id).get();

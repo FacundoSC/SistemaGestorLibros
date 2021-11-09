@@ -3,10 +3,8 @@ package com.egg.web.library.service;
 import com.egg.web.library.entity.Book;
 import com.egg.web.library.entity.Author;
 import com.egg.web.library.entity.Editorial;
-import com.egg.web.library.exception.MyExceptionService;
-import com.egg.web.library.repository.AuthorRepository;
+import com.egg.web.library.config.GlobalExceptionHandler;
 import com.egg.web.library.repository.BookRepository;
-import com.egg.web.library.repository.EditorialRepository;
 import com.egg.web.library.validation.Validation;
 import java.util.List;
 import java.util.Optional;
@@ -26,11 +24,11 @@ public class BookService {
     private AuthorService authorSer;
 
     @Transactional
-    public void getBook(Long isbn, String title, Integer year, Integer copies, Author author, Editorial editorial) throws MyExceptionService {
+    public void getBook(Long isbn, String title, Integer year, Integer copies, Author author, Editorial editorial) throws GlobalExceptionHandler.MyExceptionService {
         try {
             Validation.validationService(isbn, title, year, copies);
-        } catch (MyExceptionService e) {
-            throw new MyExceptionService();
+        } catch (GlobalExceptionHandler.MyExceptionService e) {
+            throw new GlobalExceptionHandler.MyExceptionService();
         }
 
         Book book = new Book();
@@ -45,14 +43,14 @@ public class BookService {
 //NO ESTOY USANDO MI QUERY ESPECIAL PARA ESTO
 
     @Transactional
-    public void modifyBook(String id, Long isbn, String title, Integer year, Integer copies, Author author, Editorial editorial) throws MyExceptionService {
+    public void modifyBook(String id, Long isbn, String title, Integer year, Integer copies, Author author, Editorial editorial) throws GlobalExceptionHandler.MyExceptionService {
         try {
             Validation.validationService(isbn, title, year, copies);
             Optional<Book> reponse = bookRep.findById(id);
             Validation.validationIDfound(id, reponse);
 
-        } catch (MyExceptionService e) {
-            throw new MyExceptionService();
+        } catch (GlobalExceptionHandler.MyExceptionService e) {
+            throw new GlobalExceptionHandler.MyExceptionService();
         }
 
         Book book = bookRep.findById(id).get();
@@ -68,13 +66,13 @@ public class BookService {
     }
 
     @Transactional
-    public void unsuscribe(String id) throws MyExceptionService {
+    public void unsuscribe(String id) throws GlobalExceptionHandler.MyExceptionService {
         try {
             Optional<Book> reponse = bookRep.findById(id);
             Validation.validationIDfound(id, reponse);
 
-        } catch (MyExceptionService e) {
-            throw new MyExceptionService();
+        } catch (GlobalExceptionHandler.MyExceptionService e) {
+            throw new GlobalExceptionHandler.MyExceptionService();
         }
 
         Book book = bookRep.findById(id).get();

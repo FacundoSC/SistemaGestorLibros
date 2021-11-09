@@ -1,22 +1,16 @@
 
 package com.egg.web.library.controller;
-import com.egg.web.library.entity.Author;
 import com.egg.web.library.entity.Editorial;
-import com.egg.web.library.exception.MyExceptionService;
+import com.egg.web.library.config.GlobalExceptionHandler;
 import com.egg.web.library.service.EditorialService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RestController
 public class EditorialController {
@@ -24,57 +18,51 @@ public class EditorialController {
     EditorialService eService;
 
 
-    @GetMapping(value="/listarEditoriales",produces = {MediaType.APPLICATION_JSON_VALUE})
-    private List <Editorial> listaEditoriales() {
-        List <Editorial> editoriales = eService.findAll();
+    @GetMapping(value = "/listarEditoriales", produces = {MediaType.APPLICATION_JSON_VALUE})
+    private List<Editorial> listaEditoriales() {
+        List<Editorial> editoriales = eService.findAll();
         return editoriales;
     }
 
 
-    @GetMapping(value="/listarEditoriales2",produces = {MediaType.APPLICATION_JSON_VALUE})
-    private List <Editorial> listaEditorialesSp() {
-        List <Editorial> editoriales = eService.obtenerEditoriales();
+    @GetMapping(value = "/listarEditoriales2", produces = {MediaType.APPLICATION_JSON_VALUE})
+    private List<Editorial> listaEditorialesSp() {
+        List<Editorial> editoriales = eService.obtenerEditoriales();
         return editoriales;
     }
 
-    @GetMapping(value="/altaEditorialSp",produces = MediaType.APPLICATION_JSON_VALUE)
-    private String ActivarEditorialSP(@RequestParam String id)  {
+    @GetMapping(value = "/altaEditorialSp", produces = MediaType.APPLICATION_JSON_VALUE)
+    private String ActivarEditorialSP(@RequestParam String id) {
         JSONObject myJson = new JSONObject();
         String mensaje = eService.activarEditorial(id);
-        if(mensaje.equals("OK")){
-            myJson.put("message","La editorial  ha sido activado");
-            myJson.put("descripcion","Desactivar");
-            myJson.put("status","true");
-        }else{
+        if (mensaje.equals("OK")) {
+            myJson.put("message", "La editorial  ha sido activado");
+            myJson.put("descripcion", "Desactivar");
+            myJson.put("status", "true");
+        } else {
             myJson.put("message", mensaje);
-            myJson.put("descripcion","Error");
-            myJson.put("status","Error");
+            myJson.put("descripcion", "Error");
+            myJson.put("status", "Error");
         }
         return myJson.toString();
     }
 
 
-
-    @GetMapping(value="/desactivarEditorialSp",produces = MediaType.APPLICATION_JSON_VALUE)
-    private String DesactivarEditorialSP(@RequestParam String id)  {
+    @GetMapping(value = "/desactivarEditorialSp", produces = MediaType.APPLICATION_JSON_VALUE)
+    private String DesactivarEditorialSP(@RequestParam String id) {
         JSONObject myJson = new JSONObject();
         String mensaje = eService.desactivarEditorial(id);
-        if(mensaje.equals("OK")){
-            myJson.put("message","La editorial  ha sido dada desactivado");
-            myJson.put("descripcion","Activar");
-            myJson.put("status","false");
-        }else{
-            myJson.put("message",mensaje);
-            myJson.put("descripcion","Error");
-            myJson.put("status","Error");
+        if (mensaje.equals("OK")) {
+            myJson.put("message", "La editorial  ha sido dada desactivado");
+            myJson.put("descripcion", "Activar");
+            myJson.put("status", "false");
+        } else {
+            myJson.put("message", mensaje);
+            myJson.put("descripcion", "Error");
+            myJson.put("status", "Error");
         }
         return myJson.toString();
     }
-
-
-
-
-
 
 
     @GetMapping("/mostrarEditoriales")
@@ -94,20 +82,22 @@ public class EditorialController {
     }
 
 
-
     // revisar el tryCatch y poner un mensaje que se creo el editor
 
-    @PostMapping(value="/crearEditorial",produces = {MediaType.APPLICATION_JSON_VALUE})
-    public  String  CrearEditorial(@RequestBody String editorial) throws MyExceptionService {
+    @PostMapping(value = "/crearEditorial", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public String CrearEditorial(@RequestBody String editorial) throws GlobalExceptionHandler.MyExceptionService {
         JSONObject myJson = new JSONObject(editorial);
-        String  nombreEditorial = myJson.get("nombre").toString();
+        String nombreEditorial = myJson.get("nombre").toString();
         eService.CrearEditorial(nombreEditorial);
         myJson = new JSONObject();
-        myJson.put("message","se  creo  la editorial de nombre "+nombreEditorial);
-        myJson.put("status","OK");
+        myJson.put("message", "se  creo  la editorial de nombre " + nombreEditorial);
+        myJson.put("status", "OK");
         return myJson.toString();
     }
 
+
+    //MVC
+    //REST
 
 
 

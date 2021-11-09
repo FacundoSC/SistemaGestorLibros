@@ -1,36 +1,34 @@
 package com.egg.web.library.validation;
 
-import com.egg.web.library.entity.Author;
-import com.egg.web.library.entity.Editorial;
-import com.egg.web.library.exception.MyExceptionService;
+import com.egg.web.library.config.GlobalExceptionHandler;
 
 import java.util.Optional;
 
 public class Validation {
 
-    public static void validationService(String name) throws MyExceptionService {
+    public static void validationService(String name) throws GlobalExceptionHandler.MyExceptionService {
         if (name == null || name.isEmpty()) {
-            throw  MyExceptionService.nameAuthor();
+            throw  GlobalExceptionHandler.MyExceptionService.nameAuthor();
         }
     }
 
-    public static void validationIDfound(String id, Optional reponse) throws MyExceptionService {
+    public static void validationIDfound(String id, Optional reponse) throws GlobalExceptionHandler.MyExceptionService {
 
         if (!reponse.isPresent()) {
-            throw  MyExceptionService.idNotFound();
+            throw  GlobalExceptionHandler.MyExceptionService.idNotFound();
         }
 
     }
-    public static void validationService(Long isbn, String title, Integer year, Integer copies) throws MyExceptionService {
+    public static void validationService(Long isbn, String title, Integer year, Integer copies) throws GlobalExceptionHandler.MyExceptionService {
 
         if (title == null || title.isEmpty()) {
-            throw  MyExceptionService.titleBook();
+            throw  GlobalExceptionHandler.MyExceptionService.titleBook();
         } if (isbn == null ) {
-            throw  MyExceptionService.nameAuthor();
+            throw  GlobalExceptionHandler.MyExceptionService.nameAuthor();
         } if (year == null ) {
-            throw  MyExceptionService.isbn();
+            throw  GlobalExceptionHandler.MyExceptionService.isbn();
         } if (copies == null ) {
-            throw  MyExceptionService.copies();
+            throw  GlobalExceptionHandler.MyExceptionService.copies();
         }
 
     }

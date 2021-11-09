@@ -1,8 +1,7 @@
 package com.egg.web.library.service;
 
-import com.egg.web.library.entity.Author;
 import com.egg.web.library.entity.Editorial;
-import com.egg.web.library.exception.MyExceptionService;
+import com.egg.web.library.config.GlobalExceptionHandler;
 import com.egg.web.library.repository.EditorialRepository;
 import com.egg.web.library.validation.Validation;
 import java.util.List;
@@ -20,11 +19,11 @@ public class EditorialService {
     private EditorialRepository editorialRep;
 
     @Transactional
-    public void CrearEditorial(String name) throws MyExceptionService {
+    public void CrearEditorial(String name) throws GlobalExceptionHandler.MyExceptionService {
         try {
             Validation.validationService(name);
-        } catch (MyExceptionService e) {
-            throw MyExceptionService.nameAuthor();
+        } catch (GlobalExceptionHandler.MyExceptionService e) {
+            throw GlobalExceptionHandler.MyExceptionService.nameAuthor();
         }
         Editorial editorial = new Editorial();
         editorial.setName(name);
@@ -53,14 +52,14 @@ public class EditorialService {
 //NO ESTOY USANDO MI QUERY ESPECIAL PARA ESTO
 
     @Transactional
-    public void modifyName(String id, String name) throws MyExceptionService {
+    public void modifyName(String id, String name) throws GlobalExceptionHandler.MyExceptionService {
         try {
             Validation.validationService(name);
             Optional<Editorial> reponse = editorialRep.findById(id);
             Validation.validationIDfound(id, reponse);
 
-        } catch (MyExceptionService e) {
-            throw new MyExceptionService();
+        } catch (GlobalExceptionHandler.MyExceptionService e) {
+            throw new GlobalExceptionHandler.MyExceptionService();
         }
 
         Editorial editorial = editorialRep.findById(id).get();
@@ -70,13 +69,13 @@ public class EditorialService {
     }
 
     @Transactional
-    public void unsuscribe(String id) throws MyExceptionService {
+    public void unsuscribe(String id) throws GlobalExceptionHandler.MyExceptionService {
         try {
             Optional<Editorial> reponse = editorialRep.findById(id);
             Validation.validationIDfound(id, reponse);
 
-        } catch (MyExceptionService e) {
-            throw new MyExceptionService();
+        } catch (GlobalExceptionHandler.MyExceptionService e) {
+            throw new GlobalExceptionHandler.MyExceptionService();
         }
 
         Editorial editorial = editorialRep.findById(id).get();
